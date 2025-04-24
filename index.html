@@ -23,6 +23,13 @@
         margin-bottom: 10px;
         width: 100%;
     }
+
+    pre {
+        border: 2px solid #000;
+        background-color: #eeeeee;
+        padding: 2px;
+        white-space: normal !important;
+    }
 </style>
 
 <script>
@@ -81,17 +88,24 @@
     </script>
     <script src="./assets/js/ace/ace.js"></script>
     <script src="./assets/js/ace/ace.js"></script>
-    <script src="./assets/js/showdown.min.js"></script>
+    <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
     <script>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode(`ace/mode/${EditorMode}`);
-
+        
         var converter = new showdown.Converter()
+        console.log(converter)
         editor.on("change", () => {
             if (EditorMode === 'markdown') {
                 text = editor.getValue()
-                html = converter.makeHtml(text);
+                console.log(text)
+                html = converter.makeHtml(`
+                | Tables        | Are           | Cool  |
+                | ------------- |:-------------:| -----:|
+                | **col 3 is**  | right-aligned | $1600 |
+                | col 2 is      | *centered*    |   $12 |
+                | zebra stripes | ~~are neat~~  |    $1 |`);
                 document.querySelector(".printable-area").innerHTML = html;
             } else {
                 document.querySelector(".printable-area").innerHTML = editor.getValue();

@@ -1,0 +1,28 @@
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('./../fonts/roboto-condensed/RobotoCondensed-Regular.ttf');
+}
+.preview-mode {
+    scale: 0.395; /*todo implements scale resolution*/
+    border: 0px;
+}
+
+.design-mode {
+    
+}
+
+.paper {
+    border: 1px solid black;
+    width: 480.1px;
+    justify-content: center;
+    display: flex;
+}
+
+.printable-area {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 384px; /*my printer have max resoution 384dots total*/
+    font-size: 25px;
+    font-family: 'Roboto Condensed';
+    letter-spacing: -1.8px;
+}

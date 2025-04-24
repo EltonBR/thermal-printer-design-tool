@@ -1,0 +1,1 @@
+python_escpos==3.1

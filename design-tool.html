@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thermal Printer Design tool</title>
+</head>
+<link rel="stylesheet" type="text/css" href="./assets/css/style-base.css">
+<style>
+
+    table {
+        border-collapse: collapse;
+        margin-top: 5px;
+        width: 100%;
+    }
+
+    table td {
+       
+        border: 1px solid rgb(0, 0, 0);
+        padding: 5px;
+        margin: 0px;
+    }
+    img {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+</style>
+<script>
+    function togglePreviewMode() {
+        let el = document.querySelector('.paper')
+        if (el.classList.contains('design-mode')) {
+            el.classList.add('preview-mode')
+            el.classList.remove('design-mode')
+        } else {
+            el.classList.remove('preview-mode')
+            el.classList.add('design-mode')
+        }
+    }
+</script>
+<body>
+    <div class="paper">
+        <div class="printable-area">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Sed eu eros in eros blandit vulputate. Aliquam erat volutpat. 
+            Interdum et malesuada fames ac ante ipsum primis in faucibus. 
+            Cras vitae finibus erat. Aliquam eu bibendum sem, ut ornare sem. 
+            Nam diam nunc, tristique ac varius sed, tempor id ligula. 
+            Proin sit amet ante eget odio tempus tempus.
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Nome</td>
+                        <td>email</td>
+                        <td>telefone</td>
+                    </tr>
+                    <tr>
+                        <td>John</td>
+                        <td>fakemail@co.uk</td>
+                        <td>(11) 93000-0000</td>
+                    </tr>                    <tr>
+                        <td>Joe</td>
+                        <td>johnjoe@co.uk</td>
+                        <td>(11) 91000-9999</td>
+                    </tr>
+                </tbody>
+            </table>
+            <img src="./cat.jpg" style="width: 100%;">
+            Texto final
+        </div>
+    </div>
+
+    <br>
+    <button onclick="exportarImagem()">Exportar</button>
+    <button onclick="togglePreviewMode()">Toggle Preview Mode</button>
+    <script src="./assets/js/html2canvas.min.js"></script>
+    <script>
+            function exportarImagem() {
+                const elemento = document.querySelector(".printable-area");
+                const paperEl = document.querySelector(".paper");
+                paperEl.classList.remove("preview-mode");
+                paperEl.classList.add("design-mode");
+                html2canvas(elemento).then(canvas => {
+                    const link = document.createElement("a");
+                    link.download = "div-como-imagem.png";
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                });
+            }
+    </script>
+</body>
+</html>

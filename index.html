@@ -88,24 +88,18 @@
     </script>
     <script src="./assets/js/ace/ace.js"></script>
     <script src="./assets/js/ace/ace.js"></script>
-    <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+    <script src="./assets/js/showdown.min.js"></script>
     <script>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode(`ace/mode/${EditorMode}`);
-        
         var converter = new showdown.Converter()
-        console.log(converter)
+        converter.setOption("tables", true)
         editor.on("change", () => {
             if (EditorMode === 'markdown') {
                 text = editor.getValue()
                 console.log(text)
-                html = converter.makeHtml(`
-                | Tables        | Are           | Cool  |
-                | ------------- |:-------------:| -----:|
-                | **col 3 is**  | right-aligned | $1600 |
-                | col 2 is      | *centered*    |   $12 |
-                | zebra stripes | ~~are neat~~  |    $1 |`);
+                html = converter.makeHtml(text);
                 document.querySelector(".printable-area").innerHTML = html;
             } else {
                 document.querySelector(".printable-area").innerHTML = editor.getValue();

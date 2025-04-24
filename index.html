@@ -13,7 +13,6 @@
     }
 
     table td {
-
         border: 1px solid rgb(0, 0, 0);
         padding: 5px;
         margin: 0px;
@@ -22,10 +21,12 @@
     img {
         margin-top: 10px;
         margin-bottom: 10px;
+        width: 100%;
     }
 </style>
 
 <script>
+    var EditorMode = "markdown";
     function togglePreviewMode() {
         let el = document.querySelector('.paper')
         if (el.classList.contains('design-mode')) {
@@ -36,14 +37,18 @@
             el.classList.add('design-mode')
         }
     }
+
+    function setMode(mode) {
+        EditorMode = mode;
+        editor.session.setMode(`ace/mode/${EditorMode}`);
+        editor.setValue(editor.getValue())
+    }
 </script>
 
 <body>
     <div class="page-wrapper">
         <div class="editor-wrapper">
-            <div id="editor">
-
-            </div>
+            <div id="editor">#he</div>
         </div>
         <div class="result-wrapper">
             <div class="paper">
@@ -55,6 +60,10 @@
     <br>
     <button onclick="exportarImagem()">Export</button>
     <button onclick="togglePreviewMode()">Toggle Preview Mode</button>
+    MODE: <select onchange="setMode(this.value)">
+        <option selected value="markdown">Markdown</option>
+        <option value="html">HTML</option>
+    </select>
     <script src="./assets/js/html2canvas.min.js"></script>
     <script>
         function exportarImagem() {
@@ -71,36 +80,24 @@
         }
     </script>
     <script src="./assets/js/ace/ace.js"></script>
+    <script src="./assets/js/ace/ace.js"></script>
+    <script src=" https://unpkg.com/showdown/dist/showdown.min.js"></script>
     <script>
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/html");
-        editor.setValue(`Test
-<table>
-    <tbody>
-        <tr>
-            <td>Nome</td>
-            <td>email</td>
-            <td>telefone</td>
-        </tr>
-        <tr>
-            <td>John</td>
-            <td>fakemail@co.uk</td>
-            <td>(11) 93000-0000</td>
-        </tr>                    <tr>
-            <td>Joe</td>
-            <td>johnjoe@co.uk</td>
-            <td>(11) 91000-9999</td>
-        </tr>
-    </tbody>
-</table>
-<img src="./cat.jpg" style="width: 100%;">
-final text`);
+        editor.session.setMode(`ace/mode/${EditorMode}`);
 
+        var converter = new showdown.Converter()
         editor.on("change", () => {
-            document.querySelector(".printable-area").innerHTML = editor.getValue()
+            if (EditorMode === 'markdown') {
+                text = editor.getValue()
+                html = converter.makeHtml(text);
+                document.querySelector(".printable-area").innerHTML = html;
+            } else {
+                document.querySelector(".printable-area").innerHTML = editor.getValue();
+            }
         })
-        editor.indent()
+        editor.setValue(`eee`);
     </script>
 </body>
 

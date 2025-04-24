@@ -13,20 +13,17 @@
 
 .paper {
     border: 1px solid black;
-    width: 480.1px;
-    justify-content: center;
-    display: flex;
-    height: auto;
+    width: 480.1px;    
 }
 
 .printable-area {
+    margin: auto;
     margin-top: 5px;
     margin-bottom: 5px;
     width: 384px; /*my printer have max resoution 384dots total*/
     font-size: 25px;
     font-family: 'Roboto Condensed';
     letter-spacing: -1.8px;
-    height: auto;
 }
 
 .page-wrapper {

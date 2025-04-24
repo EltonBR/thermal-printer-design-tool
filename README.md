@@ -14,10 +14,9 @@ Result preview:
 
 ### How to use it?
 
-- Open the design-tool.html file and edit html .printable-area div
-- Save, open in browser and click in export image
+- open in browser, edit html and click in export image
 - in pyprinter.py, set printer connection parameters
-- runs script
+- runs script to print
 
 * note: set printer resolution in .printable-area css class in style-base.css
 <br>

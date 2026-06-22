@@ -58,14 +58,15 @@
             <div id="editor">#he</div>
         </div>
         <div class="result-wrapper">
-            <div class="paper">
+            <div class="paper design-mode">
                 <div class="printable-area">
                 </div>
             </div>
         </div>
     </div>
     <br>
-    <button onclick="exportarImagem()">Export</button>
+    <button onclick="exportarImagem()">Exportar PNG</button>
+    <button id="print-button" onclick="imprimirImagem()">Imprimir</button>
     <button onclick="togglePreviewMode()">Toggle Preview Mode</button>
     MODE: <select onchange="setMode(this.value)">
         <option selected value="markdown">Markdown</option>
@@ -73,20 +74,63 @@
     </select>
     <script src="./assets/js/html2canvas.min.js"></script>
     <script>
-        function exportarImagem() {
+        async function renderizarImagem() {
             const elemento = document.querySelector(".printable-area");
             const paperEl = document.querySelector(".paper");
+            const wasPreview = paperEl.classList.contains("preview-mode");
             paperEl.classList.remove("preview-mode");
             paperEl.classList.add("design-mode");
-            html2canvas(elemento).then(canvas => {
-                const link = document.createElement("a");
-                link.download = "div-como-imagem.png";
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            });
+            try {
+                return await html2canvas(elemento, { backgroundColor: "#ffffff", scale: 1 });
+            } finally {
+                if (wasPreview) {
+                    paperEl.classList.add("preview-mode");
+                    paperEl.classList.remove("design-mode");
+                }
+            }
+        }
+
+        async function exportarImagem() {
+            const canvas = await renderizarImagem();
+            const link = document.createElement("a");
+            link.download = "div-como-imagem.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+
+        async function imprimirImagem() {
+            const button = document.querySelector("#print-button");
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
+            button.disabled = true;
+            button.textContent = "Imprimindo...";
+            try {
+                const canvas = await renderizarImagem();
+                const image = await new Promise((resolve, reject) =>
+                    canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("Falha ao gerar PNG")), "image/png")
+                );
+                const response = await fetch("/api/print", {
+                    method: "POST",
+                    headers: { "Content-Type": "image/png" },
+                    body: image,
+                    signal: controller.signal
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || "Falha ao imprimir");
+                button.textContent = "Enviado";
+            } catch (error) {
+                const message = error.name === "AbortError"
+                    ? "A impressora não respondeu em 10 segundos"
+                    : error.message;
+                alert(message);
+                button.textContent = "Imprimir";
+            } finally {
+                clearTimeout(timeout);
+                button.disabled = false;
+                setTimeout(() => { button.textContent = "Imprimir"; }, 1500);
+            }
         }
     </script>
-    <script src="./assets/js/ace/ace.js"></script>
     <script src="./assets/js/ace/ace.js"></script>
     <script src="./assets/js/showdown.min.js"></script>
     <script>
@@ -97,9 +141,8 @@
         converter.setOption("tables", true)
         editor.on("change", () => {
             if (EditorMode === 'markdown') {
-                text = editor.getValue()
-                console.log(text)
-                html = converter.makeHtml(text);
+                const text = editor.getValue()
+                const html = converter.makeHtml(text);
                 document.querySelector(".printable-area").innerHTML = html;
             } else {
                 document.querySelector(".printable-area").innerHTML = editor.getValue();

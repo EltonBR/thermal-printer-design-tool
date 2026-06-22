@@ -1,0 +1,20 @@
+printer-server
+escpos-print
+escpos-capabilities
+escpos-test
+
+# C/build artifacts
+*.o
+*.a
+*.so
+*.bin
+compile_commands.json
+
+# Legacy/runtime caches
+__pycache__/
+*.pyc
+
+# Local image tests
+/img.jpg
+/p.jpg
+/test.png
